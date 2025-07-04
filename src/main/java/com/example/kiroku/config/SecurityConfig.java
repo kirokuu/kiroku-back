@@ -4,6 +4,9 @@ package com.example.kiroku.config;
 
 import com.example.kiroku.com.security.filter.AuthTokenFilter;
 import com.example.kiroku.com.security.jwt.AuthEntryPointJwt;
+import com.example.kiroku.login.domain.User;
+import com.example.kiroku.login.domain.type.UserType;
+import com.example.kiroku.login.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +17,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,6 +54,21 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS)
         );
+
+        http.formLogin(form -> form.
+                loginPage("/login")
+                .loginProcessingUrl("/login")           // 로그인 폼 제출(POST) 처리 URL
+                .defaultSuccessUrl("/", true)           // 로그인 성공 시 이동할 기본 페이지
+                .failureUrl("/login?error=true")
+                .permitAll());
+        // 3) 로그아웃 설정 (선택)
+        http.logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+        );
+
         //엔드포인트에서 권한체크에 실패하였을시 에러핸들링
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
         http.httpBasic(withDefaults());
@@ -61,7 +77,9 @@ public class SecurityConfig {
                         .sameOrigin()
                 )
         );
+
         http.csrf(csrf -> csrf.disable());
+
         //jwt토큰필터
         http.addFilterBefore(authenticationJwtTokenFilter(),
                 UsernamePasswordAuthenticationFilter.class);
@@ -76,22 +94,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(UserDetailsService userDetailsService) {
+    public CommandLineRunner initData(UserRepository repo, PasswordEncoder encoder) {
         return args -> {
-            JdbcUserDetailsManager manager = (JdbcUserDetailsManager) userDetailsService;
-            UserDetails user1 = User.withUsername("user1")
-                    .password(passwordEncoder().encode("password1"))
-                    .roles("USER")
-                    .build();
-            UserDetails admin = User.withUsername("admin")
-                    //.password(passwordEncoder().encode("adminPass"))
-                    .password(passwordEncoder().encode("adminPass"))
-                    .roles("ADMIN")
-                    .build();
+            if (repo.count() == 0) {
+                User user1 = User.createUser("user1",
+                        encoder.encode("password1"),
+                        "010-1234-0001",
+                        UserType.ROLE_USER);
+                repo.save(user1);
 
-            JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-            userDetailsManager.createUser(user1);
-            userDetailsManager.createUser(admin);
+                User user2 = User.createUser("user1",
+                        encoder.encode(
+                                "password1"),
+                        "010-1234-0001",
+                        UserType.ROLE_USER);
+                repo.save(user2);
+
+            }
+
         };
     }
 
