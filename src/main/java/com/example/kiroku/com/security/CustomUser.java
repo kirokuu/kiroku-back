@@ -2,7 +2,10 @@ package com.example.kiroku.com.security;
 
 import com.example.kiroku.login.domain.User;
 import com.example.kiroku.login.domain.type.UserType;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,6 +15,8 @@ import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Builder
+@Getter @Setter
 public class CustomUser implements UserDetails {
 
     private final User user;
