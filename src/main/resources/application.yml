@@ -16,6 +16,5 @@ spring:
       format_sql: true
       ddl-auto: create
 
-
 server:
   port: 8090

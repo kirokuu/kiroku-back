@@ -11,13 +11,17 @@ import lombok.Setter;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String userId;
     private String username;
     private String password;
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private UserType role;
+    @Transient
+    private boolean isEmpty = false;
 
-    public User(String username, String password, String phoneNumber, UserType role){
+    public User(String userId,String username, String password, String phoneNumber, UserType role){
+        this.userId = userId;
         this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -25,7 +29,13 @@ public class User {
     }
 
     //User객체 최초생성(가입)
-    public static User createUser(String username, String password, String phoneNumber, UserType role){
-        return new User(username, password, phoneNumber, role);
+    public static User createUser(String userId, String username, String password, String phoneNumber, UserType role){
+        return new User(userId,username, password, phoneNumber, role);
+    }
+
+    public static User emptyUser(){
+        User user = new User();
+        user.isEmpty = true;
+        return user;
     }
 }
