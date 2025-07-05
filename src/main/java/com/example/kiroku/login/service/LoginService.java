@@ -1,5 +1,7 @@
 package com.example.kiroku.login.service;
 
+import com.example.kiroku.login.dto.LoginDto;
+
 public interface LoginService {
-    void loginUser(String username, String password);
+    LoginDto.LoginResponse loginUser(String username, String password);
 }

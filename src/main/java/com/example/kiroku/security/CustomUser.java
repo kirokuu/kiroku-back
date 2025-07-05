@@ -1,30 +1,28 @@
-package com.example.kiroku.com.security;
+package com.example.kiroku.security;
 
 import com.example.kiroku.login.domain.User;
 import com.example.kiroku.login.domain.type.UserType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-@RequiredArgsConstructor
-@Builder
+
 @Getter @Setter
 public class CustomUser implements UserDetails {
 
-    private final User user;
+    private User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         UserType role = user.getRole();
         return Collections.singletonList(()->role.getRole());
+    }
+
+    public CustomUser(User user){
+        this.user = user;
     }
 
     @Override
@@ -35,5 +33,9 @@ public class CustomUser implements UserDetails {
     @Override
     public String getPassword() {
         return user.getPassword();
+    }
+
+    public static CustomUser create(User user){
+        return new CustomUser(user) ;
     }
 }
