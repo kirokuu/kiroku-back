@@ -1,6 +1,6 @@
-package com.example.kiroku.com.security.filter;
+package com.example.kiroku.security.filter;
 
-import com.example.kiroku.com.security.util.JwtUtils;
+import com.example.kiroku.security.util.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

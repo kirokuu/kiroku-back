@@ -1,4 +1,4 @@
-package com.example.kiroku.com.security.jwt;
+package com.example.kiroku.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

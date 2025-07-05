@@ -2,8 +2,8 @@ package com.example.kiroku.config;
 
 
 
-import com.example.kiroku.com.security.filter.AuthTokenFilter;
-import com.example.kiroku.com.security.jwt.AuthEntryPointJwt;
+import com.example.kiroku.security.filter.AuthTokenFilter;
+import com.example.kiroku.security.jwt.AuthEntryPointJwt;
 import com.example.kiroku.login.domain.User;
 import com.example.kiroku.login.domain.type.UserType;
 import com.example.kiroku.login.repository.UserRepository;
@@ -17,14 +17,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.sql.DataSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -32,9 +28,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    @Autowired
-    DataSource dataSource;
-
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
@@ -55,20 +48,7 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS)
         );
 
-        http.formLogin(form -> form.
-                loginPage("/login")
-                .loginProcessingUrl("/login")           // 로그인 폼 제출(POST) 처리 URL
-                .defaultSuccessUrl("/", true)           // 로그인 성공 시 이동할 기본 페이지
-                .failureUrl("/login?error=true")
-                .permitAll());
-        // 3) 로그아웃 설정 (선택)
-        http.logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-        );
-
+        http.formLogin(form -> form.disable());
         //엔드포인트에서 권한체크에 실패하였을시 에러핸들링
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
         http.httpBasic(withDefaults());
@@ -88,30 +68,23 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
-    }
-
-    @Bean
+    @Bean //TODO test용
     public CommandLineRunner initData(UserRepository repo, PasswordEncoder encoder) {
         return args -> {
-            if (repo.count() == 0) {
                 User user1 = User.createUser("user1",
+                        "유저1",
                         encoder.encode("password1"),
                         "010-1234-0001",
                         UserType.ROLE_USER);
                 repo.save(user1);
 
-                User user2 = User.createUser("user1",
+                User user2 = User.createUser("user2",
+                        "유저2",
                         encoder.encode(
-                                "password1"),
+                                "password2"),
                         "010-1234-0001",
                         UserType.ROLE_USER);
                 repo.save(user2);
-
-            }
-
         };
     }
 
