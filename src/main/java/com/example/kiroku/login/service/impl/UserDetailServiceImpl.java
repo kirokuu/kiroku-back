@@ -1,8 +1,8 @@
-package com.example.kiroku.login.service;
+package com.example.kiroku.login.service.impl;
 
 import com.example.kiroku.security.CustomUser;
-import com.example.kiroku.login.domain.User;
-import com.example.kiroku.login.repository.UserRepository;
+import com.example.kiroku.user.domain.User;
+import com.example.kiroku.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

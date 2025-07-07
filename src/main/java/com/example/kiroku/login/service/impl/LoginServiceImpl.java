@@ -1,26 +1,22 @@
-package com.example.kiroku.login.service;
+package com.example.kiroku.login.service.impl;
 
-import com.example.kiroku.login.domain.User;
+import com.example.kiroku.user.domain.User;
 import com.example.kiroku.login.dto.KakaoDto;
 import com.example.kiroku.login.dto.LoginDto;
-import com.example.kiroku.login.repository.UserRepository;
+import com.example.kiroku.login.service.LoginService;
 import com.example.kiroku.login.service.kakao.KakaoService;
 import com.example.kiroku.security.CustomUser;
 import com.example.kiroku.security.util.JwtUtils;
-import com.example.kiroku.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class LoginServiceImpl implements LoginService{
+public class LoginServiceImpl implements LoginService {
 
     private final KakaoService kakaoService;
-
     private final JwtUtils jwtUtils;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;

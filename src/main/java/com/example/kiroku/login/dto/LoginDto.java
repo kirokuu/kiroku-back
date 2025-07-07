@@ -1,7 +1,6 @@
 package com.example.kiroku.login.dto;
 
-import com.example.kiroku.login.domain.User;
-import com.example.kiroku.security.util.JwtUtils;
+import com.example.kiroku.user.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
