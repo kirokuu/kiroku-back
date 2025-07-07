@@ -1,7 +1,5 @@
 FROM openjdk:21
 WORKDIR /app
-COPY build/libs/kiroku-0.0.1-SNAPSHOT.jar kirocu.jar
+COPY build/libs/*.jar kirocu.jar
 CMD ["java", "-jar", "kirocu.jar"]
-LABEL authors="jeonbyeong-il"
 
-ENTRYPOINT ["top", "-b"]

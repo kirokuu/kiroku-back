@@ -1,4 +1,7 @@
 spring:
+  app:
+    jwtSecret: mySecretKey123912738aopsgjnspkmndfsopkvajoirjg94gf2opfng2moknm
+    jwtExpirationMs: 300000
   datasource:
     url: jdbc:mysql://34.171.21.95:3305/testdb?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -13,6 +16,5 @@ spring:
       format_sql: true
       ddl-auto: create
 
-
 server:
-  port: 8070
+  port: 8090
