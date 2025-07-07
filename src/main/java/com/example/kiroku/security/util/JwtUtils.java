@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
@@ -28,6 +31,10 @@ public class JwtUtils {
     @Value("${spring.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    @Value("${spring.app.role}")
+    private String KEY_ROLE;
+
+
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         logger.debug("Authorization Header: {}", bearerToken);
@@ -35,6 +42,27 @@ public class JwtUtils {
             return bearerToken.substring(7); // Remove Bearer prefix
         }
         return null;
+    }
+
+    public String generateAccessToken(Authentication authentication) {
+        return generateToken(authentication, jwtExpirationMs);
+    }
+
+    private String generateToken(Authentication authentication, long expireTime) {
+        Date now = new Date();
+        Date expiredDate = new Date(now.getTime() + expireTime);
+
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining());
+
+        return Jwts.builder()
+                .subject(authentication.getName())
+                .claim(KEY_ROLE, authorities)
+                .issuedAt(now)
+                .expiration(expiredDate)
+                .signWith(key())
+                .compact();
     }
 
     public String generateTokenFromUsername(UserDetails userDetails) {

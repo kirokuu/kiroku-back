@@ -33,10 +33,14 @@ public class LoginController {
         return ResponseEntity.ok(loginService.getSocialLoginUrl());
     }
 
-    @GetMapping("/kakao/callback")
+    /*@GetMapping("/kakao/callback")
     public ResponseEntity<KakaoDto.KakaoUserInfoResponse> getKakaoUserInfo(@RequestParam("code") String code){
         return ResponseEntity.ok(loginService.getAccess(code));
+    }*/
+
+
+    @GetMapping("/oauth/success")
+    public ResponseEntity<String> test(@RequestParam("token") String token){
+        return ResponseEntity.ok(token);
     }
-
-
 }
