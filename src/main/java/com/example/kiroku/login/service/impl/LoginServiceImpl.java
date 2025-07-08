@@ -6,7 +6,7 @@ import com.example.kiroku.login.dto.LoginDto;
 import com.example.kiroku.login.service.LoginService;
 import com.example.kiroku.login.service.kakao.KakaoService;
 import com.example.kiroku.security.CustomUser;
-import com.example.kiroku.security.util.JwtUtils;
+import com.example.kiroku.security.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class LoginServiceImpl implements LoginService {
 
     private final KakaoService kakaoService;
-    private final JwtUtils jwtUtils;
+    private final JwtProvider jwtProvider;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
@@ -27,8 +27,11 @@ public class LoginServiceImpl implements LoginService {
         User user = passwordEncoder.matches(password, customUser.getPassword()) ? customUser.getUser() : User.emptyUser();
         LoginDto.LoginResponse response = LoginDto.getResponse(user);
         if(!user.isEmpty()) {
-            String jwt = jwtUtils.generateTokenFromUsername(CustomUser.create(user));
-            response.setToken(jwt);
+            String jwtToken = jwtProvider.generateTokenFromUsername(CustomUser.create(user));
+            String refreshToken = jwtProvider.generateRefreshTokenFromUsername(CustomUser.create(user));
+
+            jwtProvider.saveRefreshToken(jwtToken, refreshToken, user.getUserId());
+            response.setTokens(jwtToken, refreshToken);
         }
         return response;
     }

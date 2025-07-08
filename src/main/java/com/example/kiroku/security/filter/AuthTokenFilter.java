@@ -1,6 +1,6 @@
 package com.example.kiroku.security.filter;
 
-import com.example.kiroku.security.util.JwtUtils;
+import com.example.kiroku.security.util.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,7 @@ import java.io.IOException;
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
-    private JwtUtils jwtUtils;
+    private JwtProvider jwtProvider;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -34,8 +34,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         logger.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
         try {
             String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            if (jwt != null && jwtProvider.validateJwtToken(jwt)) {
+                String username = jwtProvider.getUserNameFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -46,8 +46,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 logger.debug("Roles from JWT: {}", userDetails.getAuthorities());
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                //jwt토큰 인증을 거지고 인증정보를 securitycontext에 저장
+                //jwt토큰 인증을 거치고 인증정보를 securitycontext에 저장
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            }else {
+                jwtProvider.jwtTokenReissuer(jwt);
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
@@ -57,7 +59,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String jwt = jwtUtils.getJwtFromHeader(request);
+        String jwt = jwtProvider.getJwtFromHeader(request);
         logger.debug("AuthTokenFilter.java: {}", jwt);
         return jwt;
     }
