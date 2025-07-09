@@ -1,5 +1,6 @@
 package com.example.kiroku.security.filter;
 
+import com.example.kiroku.security.jwt.JwtTokens;
 import com.example.kiroku.security.util.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +20,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.Duration;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -49,7 +55,22 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 //jwt토큰 인증을 거치고 인증정보를 securitycontext에 저장
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }else {
-                jwtProvider.jwtTokenReissuer(jwt);
+                String refreshToken = jwtProvider.getRefreshToken(request);
+                if (refreshToken != null) {
+                    JwtTokens jwtTokens = jwtProvider.jwtTokenReissuer(refreshToken);
+
+                    //TODO 리팩토링대상
+                    ResponseCookie cookie = ResponseCookie.from("refreshToken", jwtTokens.getRefreshToken())
+                            .httpOnly(true)
+                            .secure(true)
+                            .path("/")
+                            .maxAge(Duration.ofDays(7))
+                            .sameSite("Strict")
+                            .build();
+
+                    response.setHeader(AUTHORIZATION, "Bearer " + jwtTokens.getAccessToken());
+                    response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+                }
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);

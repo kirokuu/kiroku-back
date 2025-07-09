@@ -12,22 +12,22 @@ import lombok.NoArgsConstructor;
 public class JwtTokens {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String token;
+    private String accessToken;
     private String refreshToken;
     private String userId;
 
     public JwtTokens(String token, String refreshToken, String userId){
         this.refreshToken = refreshToken;
         this.userId = userId;
-        this.token = token;
+        this.accessToken = token;
     }
 
-    public static JwtTokens createRefreshToken(String token, String refreshToken, String userId){
-       return new JwtTokens(token, refreshToken, userId);
+    public static JwtTokens createRefreshToken(String accessToken, String refreshToken, String userId){
+       return new JwtTokens(accessToken, refreshToken, userId);
     }
 
-    public void updateToken(String token, String refreshToken){
-        this.token = token;
+    public void updateToken(String accessToken, String refreshToken){
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 }
