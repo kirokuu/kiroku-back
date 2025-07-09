@@ -55,7 +55,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 //jwt토큰 인증을 거치고 인증정보를 securitycontext에 저장
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }else {
-                JwtTokens jwtTokens = jwtProvider.jwtTokenReissuer(jwt);
+                String refreshToken = jwtProvider.getRefreshToken(request);
+                JwtTokens jwtTokens = jwtProvider.jwtTokenReissuer(refreshToken);
 
                 //TODO 리팩토링대상
                 ResponseCookie cookie = ResponseCookie.from("refreshToken", jwtTokens.getRefreshToken())

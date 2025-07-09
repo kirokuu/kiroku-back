@@ -4,6 +4,7 @@ import com.example.kiroku.security.jwt.JwtTokens;
 import com.example.kiroku.security.jwt.JwtTokensRepository;
 import com.example.kiroku.security.util.exception.TokenException;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,6 +88,16 @@ public class JwtProvider {
     public String generateRefreshTokenFromUsername(UserDetails userDetails) {
         return generateToken(userDetails, REFRESH_TOKEN_EXPIRATION_MS);
     }
+    public String getRefreshToken(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
 
     private String generateToken(Authentication authentication, long expireTime) {
         Date now = new Date();
@@ -124,20 +135,19 @@ public class JwtProvider {
                 claims.get(KEY_ROLE).toString()));
     }
 
-    public JwtTokens jwtTokenReissuer(String token){
-        String userId = getUserNameFromJwtToken(token);
-        JwtTokens refreshToken = jwtTokensRepository.findByTokenAndUserId(token, userId)
+    public JwtTokens jwtTokenReissuer(String refreshToken){
+        //String userId = getUserNameFromJwtToken(refreshToken);
+        JwtTokens tokens = jwtTokensRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new RuntimeException("Refresh Token is not found"));
 
-        Authentication authentication = getAuthentication(token);
+        Authentication authentication = getAuthentication(tokens.getAccessToken());
 
-        //TODO refresh토큰을 access토큰으로 바꾸는 과정 시간설정 다시
         String newToken = generateToken(authentication, TOKEN_EXPIRATION_MS);
         String newRefreshToken = generateToken(authentication, REFRESH_TOKEN_EXPIRATION_MS);
 
-        refreshToken.updateToken(token, newRefreshToken);
+        tokens.updateToken(newToken, newRefreshToken);
 
-        return refreshToken;
+        return tokens;
     }
 
     private Key key() {
