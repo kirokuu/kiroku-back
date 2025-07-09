@@ -65,7 +65,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                             .secure(true)
                             .path("/")
                             .maxAge(Duration.ofDays(7))
-                            .sameSite("Strict")
+                            .sameSite("None")
                             .build();
 
                     response.setHeader(AUTHORIZATION, "Bearer " + jwtTokens.getAccessToken());
