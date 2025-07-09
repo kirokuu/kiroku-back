@@ -1,7 +1,6 @@
 package com.example.kiroku.login.dto;
 
-import com.example.kiroku.login.domain.User;
-import com.example.kiroku.security.util.JwtUtils;
+import com.example.kiroku.user.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -23,6 +22,7 @@ public class LoginDto {
     public static class LoginResponse {
         private LoginStatus status;
         private String token;
+        private String refreshToken;
         private String message;
 
         public LoginResponse succes(){
@@ -35,6 +35,11 @@ public class LoginDto {
             this.status = LoginStatus.FAIL;
             this.message = "로그인 실패";
             return this;
+        }
+
+        public void setTokens(String token, String refreshToken){
+            this.token = token;
+            this.refreshToken = refreshToken;
         }
     }
 

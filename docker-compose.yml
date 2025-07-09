@@ -12,3 +12,7 @@ services:
     build: .
     ports:
       - 8090:8090
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_SECRET=${GOOGLE_SECRET}
+      - KAKAO_API_KEY=${KAKAO_API_KEY}

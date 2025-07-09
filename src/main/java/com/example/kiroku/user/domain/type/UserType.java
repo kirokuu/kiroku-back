@@ -1,4 +1,4 @@
-package com.example.kiroku.login.domain.type;
+package com.example.kiroku.user.domain.type;
 
 import lombok.Getter;
 

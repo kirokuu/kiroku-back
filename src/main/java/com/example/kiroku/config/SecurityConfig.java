@@ -2,11 +2,14 @@ package com.example.kiroku.config;
 
 
 
+import com.example.kiroku.login.service.OAuth2SuccessHandler;
+import com.example.kiroku.login.service.impl.CustomOauth2UserService;
 import com.example.kiroku.security.filter.AuthTokenFilter;
 import com.example.kiroku.security.jwt.AuthEntryPointJwt;
-import com.example.kiroku.login.domain.User;
-import com.example.kiroku.login.domain.type.UserType;
-import com.example.kiroku.login.repository.UserRepository;
+import com.example.kiroku.user.domain.User;
+import com.example.kiroku.user.domain.type.UserType;
+import com.example.kiroku.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -27,10 +30,14 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
 
+    private final AuthEntryPointJwt unauthorizedHandler;
+
+    private final CustomOauth2UserService customOauth2UserService;
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
@@ -51,7 +58,7 @@ public class SecurityConfig {
         http.formLogin(form -> form.disable());
         //엔드포인트에서 권한체크에 실패하였을시 에러핸들링
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
-        http.httpBasic(withDefaults());
+        //http.httpBasic(withDefaults());
         http.headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions
                         .sameOrigin()
@@ -59,7 +66,9 @@ public class SecurityConfig {
         );
 
         http.csrf(csrf -> csrf.disable());
-
+        http.oauth2Login(oauth ->oauth.userInfoEndpoint(endpoint->
+                endpoint.userService(customOauth2UserService)).
+                successHandler(oAuth2SuccessHandler));
         //jwt토큰필터
         http.addFilterBefore(authenticationJwtTokenFilter(),
                 UsernamePasswordAuthenticationFilter.class);
@@ -72,6 +81,7 @@ public class SecurityConfig {
     public CommandLineRunner initData(UserRepository repo, PasswordEncoder encoder) {
         return args -> {
                 User user1 = User.createUser("user1",
+                        "user1",
                         "유저1",
                         encoder.encode("password1"),
                         "010-1234-0001",
@@ -79,6 +89,7 @@ public class SecurityConfig {
                 repo.save(user1);
 
                 User user2 = User.createUser("user2",
+                        "user2",
                         "유저2",
                         encoder.encode(
                                 "password2"),
