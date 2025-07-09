@@ -43,14 +43,14 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
-                .path("/api/auth/refresh")
+                .path("/")
                 .maxAge(Duration.ofDays(7))
                 .sameSite("Strict")
                 .build();
 
         response.setHeader(AUTHORIZATION, "Bearer " + accessToken);
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-   
+
         response.sendRedirect(redirectUri);
     }
 }
