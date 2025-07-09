@@ -10,14 +10,14 @@ spring:
       client:
         registration:
           google:
-            client-id:
-            client-secret:
+            client-id: ${GOOGLE_API_KEY}
+            client-secret: ${GOOGLE_SECRET}
             scope:
               - profile
               - email
 
           kakao:
-            client-id: d9453e7f912d112908b35ffec8853cd0
+            client-id: ${KAKAO_API_KEY}
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
