@@ -49,7 +49,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 //jwt토큰 인증을 거치고 인증정보를 securitycontext에 저장
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }else {
-                jwtProvider.jwtTokenReissuer(jwt);
+                String ref = jwtProvider.jwtTokenReissuer(jwt);
+                //TODO refresh토큰 올려줘야지 어떻게?? header에? body에 실으면 CSRF에 노출 가능
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);

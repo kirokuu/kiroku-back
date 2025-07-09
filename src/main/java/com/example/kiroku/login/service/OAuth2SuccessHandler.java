@@ -27,6 +27,12 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String token = jwtProvider.generateAccessToken(authentication);
+        String refreshToken = jwtProvider.generateRefreshToken(authentication);
+        jwtProvider.saveRefreshToken(token, refreshToken, authentication.getName());
+
+
+
+
         String redirectUri = UriComponentsBuilder.fromUriString(URI)
                 .queryParam("token", token)
                 .build().toUriString();
