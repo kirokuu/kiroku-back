@@ -124,19 +124,20 @@ public class JwtProvider {
                 claims.get(KEY_ROLE).toString()));
     }
 
-    public String jwtTokenReissuer(String token){
+    public JwtTokens jwtTokenReissuer(String token){
         String userId = getUserNameFromJwtToken(token);
         JwtTokens refreshToken = jwtTokensRepository.findByTokenAndUserId(token, userId)
                 .orElseThrow(() -> new RuntimeException("Refresh Token is not found"));
 
         Authentication authentication = getAuthentication(token);
 
+        //TODO refresh토큰을 access토큰으로 바꾸는 과정 시간설정 다시
         String newToken = generateToken(authentication, TOKEN_EXPIRATION_MS);
         String newRefreshToken = generateToken(authentication, REFRESH_TOKEN_EXPIRATION_MS);
 
-        refreshToken.updateToken(newToken, newRefreshToken);
+        refreshToken.updateToken(token, newRefreshToken);
 
-        return refreshToken.getRefreshToken();
+        return refreshToken;
     }
 
     private Key key() {
