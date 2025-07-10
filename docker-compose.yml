@@ -7,8 +7,7 @@ services:
       - 443:443
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/letsencrypt:/etc/letsencrypt
-      - ./nginx/www:/var/www/certbot
+      - ./etc/letsencrypt/live/api.kirocu.store:/etc/letsencrypt
     depends_on:
       - spring
 
@@ -20,13 +19,3 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_SECRET=${GOOGLE_SECRET}
       - KAKAO_API_KEY=${KAKAO_API_KEY}
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./nginx/letsencrypt:/etc/letsencrypt
-      - ./nginx/www:/var/www/certbot
-    entrypoint: >
-      sh -c "certbot certonly --webroot -w /var/www/certbot 
-      --email you@example.com --agree-tos --no-eff-email 
-      -d api.kirocu.store"
