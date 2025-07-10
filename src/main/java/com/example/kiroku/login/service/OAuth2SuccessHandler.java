@@ -37,8 +37,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         jwtProvider.saveRefreshToken(accessToken, refreshToken, authentication.getName());
 
         String redirectUri = UriComponentsBuilder.fromUriString(URI)
-                .queryParam("userId", jwtProvider.getUserNameFromJwtToken(accessToken))
-                .queryParam("message", "로그인에 성공하였습니다.")
                 .build().toUriString();
 
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
