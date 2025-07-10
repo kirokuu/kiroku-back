@@ -56,20 +56,21 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }else {
                 String refreshToken = jwtProvider.getRefreshToken(request);
-                JwtTokens jwtTokens = jwtProvider.jwtTokenReissuer(refreshToken);
+                if (refreshToken != null) {
+                    JwtTokens jwtTokens = jwtProvider.jwtTokenReissuer(refreshToken);
 
-                //TODO 리팩토링대상
-                ResponseCookie cookie = ResponseCookie.from("refreshToken", jwtTokens.getRefreshToken())
-                        .httpOnly(true)
-                        .secure(true)
-                        .path("/")
-                        .maxAge(Duration.ofDays(7))
-                        .sameSite("Strict")
-                        .build();
+                    //TODO 리팩토링대상
+                    ResponseCookie cookie = ResponseCookie.from("refreshToken", jwtTokens.getRefreshToken())
+                            .httpOnly(true)
+                            .secure(true)
+                            .path("/")
+                            .maxAge(Duration.ofDays(7))
+                            .sameSite("None")
+                            .build();
 
-                response.setHeader(AUTHORIZATION, "Bearer " + jwtTokens.getAccessToken());
-                response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
+                    response.setHeader(AUTHORIZATION, "Bearer " + jwtTokens.getAccessToken());
+                    response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+                }
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);

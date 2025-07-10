@@ -26,10 +26,13 @@ public class LoginDto {
         private String accessToken;
         private String refreshToken;
         private String message;
+        private String userId;
 
-        public LoginResponse succes(){
+        public LoginResponse success(User user){
             this.status = LoginStatus.SUCCESS;
             this.message = "로그인에 성공하였습니다";
+            this.userId = user.getUserId();
+
             return this;
         }
 
@@ -48,6 +51,6 @@ public class LoginDto {
     public static LoginResponse getResponse(User user){
         LoginResponse loginResponse = new LoginResponse();
         if(user.isEmpty()) return loginResponse.fail();
-        else return loginResponse.succes();
+        else return loginResponse.success(user);
     }
 }
