@@ -11,7 +11,7 @@ services:
       - ./nginx/www:/var/www/certbot
     depends_on:
       - spring
-      -
+
   spring:
     build: .
     ports:
