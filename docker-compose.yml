@@ -2,12 +2,13 @@ version: "3"
 services:
   web:
     image: nginx
+    user: root
     ports:
       - 80:80
       - 443:443
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./etc/letsencrypt/live/api.kirocu.store:/etc/letsencrypt
+      - ./etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - spring
 
