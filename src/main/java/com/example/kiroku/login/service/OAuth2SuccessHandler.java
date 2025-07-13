@@ -43,11 +43,22 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
+                .domain("kirocu.store")
                 .maxAge(Duration.ofDays(7))
                 .sameSite("Strict")
                 .build();
 
-        response.setHeader(AUTHORIZATION, "Bearer " + accessToken);
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .domain("kirocu.store")
+                .maxAge(Duration.ofDays(7))
+                .sameSite("Strict")
+                .build();
+
+        response.setHeader(HttpHeaders.SET_COOKIE, "Bearer " + accessToken);
+        response.setHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         response.sendRedirect(redirectUri);
