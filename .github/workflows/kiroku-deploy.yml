@@ -12,8 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set enviroment Key
-
       - name: Connect & Deploy to Production
         uses: appleboy/ssh-action@v1.0.0
         with:
