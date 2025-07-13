@@ -22,11 +22,14 @@ jobs:
           passphrase: ${{ secrets.PROD_SSH_PASSPHRASE }}
           script: |
             set -e
+            
             cd /app/kirocudev
+            sudo rm -rf kiroku-back
+            
+            git clone https://github.com/bottleOne/kiroku-back.git
+            cd e/kiroku-back
+            
+            ./gradlew build
             sudo docker-compose down --volumes --remove-orphans
             sudo docker builder prune -af
-            rm -rf kiroku-back
-            git clone https://github.com/bottleOne/kiroku-back.git
-            cd kiroku-back
-            ./gradlew build
             sudo docker-compose up --build -d
