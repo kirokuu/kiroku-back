@@ -19,6 +19,7 @@ jobs:
           username: ${{ secrets.PROD_USER }}
           ##password: ${{ secrets.PROD_PASSWORD }} key와 같이 사용하면 충돌
           key: ${{ secrets.PROD_SSH_KEY }}
+          passphrase: ${{ secrets.PROD_SSH_PASSPHRASE }}
           script: |
             set -e
             cd /app/kirocudev
