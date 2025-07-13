@@ -4,8 +4,6 @@ import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.domain.type.UserType;
 import jakarta.security.auth.message.AuthException;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Map;
 
