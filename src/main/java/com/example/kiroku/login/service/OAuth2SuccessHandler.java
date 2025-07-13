@@ -57,9 +57,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 .sameSite("Strict")
                 .build();
 
-        response.setHeader(HttpHeaders.SET_COOKIE, "Bearer " + accessToken);
-        response.setHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
-        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        response.setHeader(AUTHORIZATION, "Bearer " + accessToken);
+        response.addHeader(HttpHeaders.SET_COOKIE,  accessTokenCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         response.sendRedirect(redirectUri);
     }
