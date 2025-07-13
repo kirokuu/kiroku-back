@@ -23,7 +23,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final JwtProvider jwtProvider;
-    private static final String URI = "https://kiroku-front-web.vercel.app/home";
+    private static final String URI = "https://www.kirocu.store/home";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
