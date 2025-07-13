@@ -12,6 +12,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set enviroment Key
+
       - name: Connect & Deploy to Production
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -28,6 +30,10 @@ jobs:
             
             git clone https://github.com/bottleOne/kiroku-back.git
             cd kiroku-back
+            
+            echo "GOOGLE_API_KEY=${{ vars.GOOGLE_API_KEY }}" > .env
+            echo "GOOGLE_SECRET=${{ vars.GOOGLE_SECRET }}" >> .env
+            echo "KAKAO_API_KEY=${{ vars.KAKAO_API_KEY }}" >> .env
             
             ./gradlew build
             sudo docker-compose down --volumes --remove-orphans
