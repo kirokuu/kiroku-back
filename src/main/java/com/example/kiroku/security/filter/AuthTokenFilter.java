@@ -60,16 +60,27 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                     JwtTokens jwtTokens = jwtProvider.jwtTokenReissuer(refreshToken);
 
                     //TODO 리팩토링대상
-                    ResponseCookie cookie = ResponseCookie.from("refreshToken", jwtTokens.getRefreshToken())
+                    ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                             .httpOnly(true)
                             .secure(true)
                             .path("/")
+                            .domain("kirocu.store")
                             .maxAge(Duration.ofDays(7))
-                            .sameSite("None")
+                            .sameSite("Strict")
+                            .build();
+
+                    ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", jwtTokens.getAccessToken())
+                            .httpOnly(true)
+                            .secure(true)
+                            .path("/")
+                            .domain("kirocu.store")
+                            .maxAge(Duration.ofDays(7))
+                            .sameSite("Strict")
                             .build();
 
                     response.setHeader(AUTHORIZATION, "Bearer " + jwtTokens.getAccessToken());
-                    response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+                    response.addHeader(HttpHeaders.SET_COOKIE,  accessTokenCookie.toString());
+                    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
                 }
             }
         } catch (Exception e) {
