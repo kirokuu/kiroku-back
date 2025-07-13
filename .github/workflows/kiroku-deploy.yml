@@ -27,7 +27,7 @@ jobs:
             sudo rm -rf kiroku-back
             
             git clone https://github.com/bottleOne/kiroku-back.git
-            cd e/kiroku-back
+            cd /kiroku-back
             
             ./gradlew build
             sudo docker-compose down --volumes --remove-orphans
