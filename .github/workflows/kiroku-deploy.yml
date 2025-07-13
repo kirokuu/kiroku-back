@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    environment: kirocu-server-config-keys
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
