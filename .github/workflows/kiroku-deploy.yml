@@ -37,3 +37,6 @@ jobs:
             sudo docker-compose down --volumes --remove-orphans
             sudo docker builder prune -af
             sudo docker-compose up --build -d
+            
+            sudo docker logs kiroku-back_web_1
+            sudo docker logs kiroku-back_spring_1
