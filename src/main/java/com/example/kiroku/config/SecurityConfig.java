@@ -89,18 +89,18 @@ public class SecurityConfig {
     public CommandLineRunner initData(UserRepository repo, PasswordEncoder encoder) {
         return args -> {
                 User user1 = User.createUser("user1",
-                        "user1",
+                        "user1@gmail.com",
                         "유저1",
-                        encoder.encode("password1"),
+                        encoder.encode("12345678"),
                         "010-1234-0001",
                         UserType.ROLE_USER);
                 repo.save(user1);
 
                 User user2 = User.createUser("user2",
-                        "user2",
+                        "user2@gmail.com",
                         "유저2",
                         encoder.encode(
-                                "password2"),
+                                "12345678"),
                         "010-1234-0001",
                         UserType.ROLE_USER);
                 repo.save(user2);
