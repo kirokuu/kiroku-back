@@ -1,13 +1,16 @@
-version: "3"
 services:
   web:
     image: nginx
+    user: root
     ports:
       - 80:80
+      - 443:443
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - /app/kirocudev/kiroku-back/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - spring
+
   spring:
     build: .
     ports:
@@ -16,3 +19,4 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_SECRET=${GOOGLE_SECRET}
       - KAKAO_API_KEY=${KAKAO_API_KEY}
+    restart: always
