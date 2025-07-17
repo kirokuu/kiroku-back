@@ -29,12 +29,4 @@ public class JoinDto {
             return new User(this.username, this.userId, this.username, this.password, this.phoneNumber, UserType.ROLE_USER);
         }
     }
-
-    @Getter @Setter
-    @NoArgsConstructor
-    public static class JoinResponse {
-
-    }
-
-
 }

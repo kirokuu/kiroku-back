@@ -1,9 +1,14 @@
 package com.example.kiroku.user.controller;
 
+import com.example.kiroku.security.util.JwtProvider;
 import com.example.kiroku.user.JoinStatus;
+import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.dto.JoinDto;
 import com.example.kiroku.user.service.JoinService;
+import com.example.kiroku.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class JoinUserController {
 
     private final JoinService joinService;
+    private final UserService userService;
 
     @PostMapping("/in")
     @ResponseBody
@@ -35,14 +41,19 @@ public class JoinUserController {
     @ResponseBody
     public ResponseEntity checkDuplicateNickname(@RequestParam("nickname") String nickname) {
         boolean result = joinService.checkDuplicateNickname(nickname);
-        if(result) return ResponseEntity.status(HttpStatus.IM_USED).build();
+        if(result) return ResponseEntity.status(HttpStatus.CONFLICT).build();
         else return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/out")
+    @PostMapping("/withdrawal")
     @ResponseBody
-    public ResponseEntity OutUserController() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity withdrawalController(HttpServletRequest request) {
+        User user = userService.findUser(request);
+        if(user.isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
+        boolean result = joinService.withdrawal(user.getUserId());
+
+        if(!result) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.ok().build();
     }
 }

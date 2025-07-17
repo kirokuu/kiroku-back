@@ -17,15 +17,16 @@ public class JoinServiceImpl implements JoinService{
     @Override
     public JoinStatus joinUser(JoinDto.JoinRequest joinRequest) {
         User user = joinRequest.ofUser();
-        boolean duplicateId = checkDuplicateId(user.getUserId());
-        boolean duplicateNickname = checkDuplicateNickname(user.getNickname());
+        boolean duplicateId = !checkDuplicateId(user.getUserId());
+        boolean duplicateNickname = !checkDuplicateNickname(user.getNickname());
         User userToJoin = userService.findUserToJoin(user.getUserId(), user.getPhoneNumber());
-        User savedUser = userService.saveUser(user);
 
         if(duplicateId) return JoinStatus.DUPLICATE_ID;
         else if(duplicateNickname) return JoinStatus.DUPLICATE_NICKNAME;
         else if(!userToJoin.isEmpty()) return JoinStatus.ALREADY_JOIN;
-            else return JoinStatus.SUCCESS;
+
+        userService.saveUser(user);
+        return JoinStatus.SUCCESS;
     }
 
     @Override
@@ -36,7 +37,18 @@ public class JoinServiceImpl implements JoinService{
 
     @Override
     public boolean checkDuplicateNickname(String nickname) {
-        User user = userService.findUser(nickname);
+        User user = userService.findUserByNickname(nickname);
         return user.isEmpty();
+    }
+
+    @Override
+    public boolean withdrawal(String userId) {
+        User user = userService.findUser(userId);
+        if(!user.isEmpty()) {
+            return false;
+        }else {
+            userService.deleteUser(user);
+            return true;
+        }
     }
 }

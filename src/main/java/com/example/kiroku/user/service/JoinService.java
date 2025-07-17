@@ -7,5 +7,5 @@ public interface JoinService {
     public JoinStatus joinUser(JoinDto.JoinRequest joinRequest);
     public boolean checkDuplicateId(String userId);
     public boolean checkDuplicateNickname(String nickname);
-    //public String withdrawal();
+    public boolean withdrawal(String userId);
 }
