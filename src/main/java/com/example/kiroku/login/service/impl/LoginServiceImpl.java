@@ -6,7 +6,11 @@ import com.example.kiroku.login.dto.LoginDto;
 import com.example.kiroku.login.service.LoginService;
 import com.example.kiroku.login.service.kakao.KakaoService;
 import com.example.kiroku.security.CustomUser;
+import com.example.kiroku.security.jwt.JwtTokens;
+import com.example.kiroku.security.jwt.JwtTokensRepository;
 import com.example.kiroku.security.util.JwtProvider;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -27,6 +32,7 @@ public class LoginServiceImpl implements LoginService {
     private final JwtProvider jwtProvider;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokensRepository jwtTokensRepository;
 
     @Override
     public LoginDto.LoginResponse loginUser(String logindId, String password, HttpServletResponse response) {
@@ -63,5 +69,27 @@ public class LoginServiceImpl implements LoginService {
     public KakaoDto.KakaoUserInfoResponse getAccess(String code) {
         String accessToken = kakaoService.getAccessToken(code);
         return kakaoService.getUserInfo(accessToken);
+    }
+
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = jwtProvider.getJwtFromHeader(request);
+        String refreshToken = jwtProvider.getRefreshToken(request);
+
+        if (refreshToken != null) {
+            Optional<JwtTokens> jwtTokens = jwtTokensRepository.findByRefreshToken(refreshToken);
+            jwtTokens.ifPresent(jwtTokensRepository::delete);
+        }
+
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        response.setHeader(AUTHORIZATION, "");
+        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

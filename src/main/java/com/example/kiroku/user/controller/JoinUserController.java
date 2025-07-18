@@ -1,5 +1,6 @@
 package com.example.kiroku.user.controller;
 
+import com.example.kiroku.login.service.LoginService;
 import com.example.kiroku.security.util.JwtProvider;
 import com.example.kiroku.user.JoinStatus;
 import com.example.kiroku.user.domain.User;
@@ -7,6 +8,7 @@ import com.example.kiroku.user.dto.JoinDto;
 import com.example.kiroku.user.service.JoinService;
 import com.example.kiroku.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ public class JoinUserController {
 
     private final JoinService joinService;
     private final UserService userService;
+    private final LoginService loginService;
 
     @PostMapping("/in")
     @ResponseBody
@@ -47,10 +50,10 @@ public class JoinUserController {
 
     @PostMapping("/withdrawal")
     @ResponseBody
-    public ResponseEntity withdrawalController(HttpServletRequest request) {
+    public ResponseEntity withdrawalController(HttpServletRequest request, HttpServletResponse response) {
         User user = userService.findUser(request);
         if(user.isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
+        loginService.logout(request, response);
         boolean result = joinService.withdrawal(user.getUserId());
 
         if(!result) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
