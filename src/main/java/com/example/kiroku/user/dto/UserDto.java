@@ -2,14 +2,11 @@ package com.example.kiroku.user.dto;
 
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.domain.type.UserType;
-import com.example.kiroku.user.domain.userAbstract;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class UserDto extends userAbstract {
+public class UserDto {
 
 
     @Getter @Setter

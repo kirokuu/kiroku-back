@@ -44,7 +44,7 @@ public class JoinServiceImpl implements JoinService{
     @Override
     public boolean withdrawal(String userId) {
         User user = userService.findUser(userId);
-        if(!user.isEmpty()) {
+        if(user.isEmpty()) {
             return false;
         }else {
             userService.deleteUser(user);
