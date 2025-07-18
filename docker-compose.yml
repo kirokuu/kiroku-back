@@ -13,6 +13,7 @@ services:
 
   spring:
     build: .
+    image: kiroku-backend:latest
     ports:
       - 8090:8090
     environment:
