@@ -3,6 +3,7 @@ package com.example.kiroku.login.controller;
 import com.example.kiroku.login.dto.LoginDto;
 import com.example.kiroku.login.dto.LoginStatus;
 import com.example.kiroku.login.service.LoginService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,11 @@ public class LoginController {
     @GetMapping("/oauth/success")
     public ResponseEntity<String> test(@RequestParam("token") String token){
         return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        loginService.logout(request, response);
+        return ResponseEntity.ok().build();
     }
 }

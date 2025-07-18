@@ -48,7 +48,10 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
         return web -> web.ignoring()
                 // error, favicon.ico
-                .requestMatchers("/error", "/favicon.ico","/home");
+                .requestMatchers("/error", "/favicon.ico","/home",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html");
     }
 
     @Bean

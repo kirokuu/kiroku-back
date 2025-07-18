@@ -1,6 +1,7 @@
 package com.example.kiroku.user.domain;
 
 import com.example.kiroku.user.domain.type.UserType;
+import com.example.kiroku.user.dto.JoinDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
