@@ -62,6 +62,7 @@ jobs:
             sudo docker logs kiroku-back_spring_1 || true
 
       - name: Retry deploy after cache clean (only if failed)
+        id: deploy-cache
         if: steps.deploy-cache.outcome == 'failure'
         uses: appleboy/ssh-action@v1.0.0
         with:
