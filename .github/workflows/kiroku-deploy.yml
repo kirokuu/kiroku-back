@@ -21,7 +21,6 @@ jobs:
       # 불필요한 Docker, Gradle 캐시 정리
       - name: Prune Docker and clean Gradle caches
         run: |
-          sudo docker system prune -af
           sudo docker volume prune -f
           rm -rf ~/.gradle/caches
           rm -rf ~/.gradle/daemon
@@ -73,6 +72,8 @@ jobs:
           script: |
             echo "❌ 캐시 문제로 인해 재시도 중..."
             
+            sudo docker system prune -af
+            
             set -e
             cd /app/kirocudev
             sudo rm -rf kiroku-back
@@ -88,7 +89,6 @@ jobs:
             ./gradlew build --no-daemon --no-build-cache
             
             sudo docker-compose down --volumes --remove-orphans
-            sudo docker system prune -af
             sudo docker volume prune -f
             sudo docker builder prune -af
             sudo docker image prune -af
