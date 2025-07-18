@@ -49,15 +49,52 @@ jobs:
             echo "GOOGLE_API_KEY=${{ vars.GOOGLE_API_KEY }}" > .env
             echo "GOOGLE_SECRET=${{ vars.GOOGLE_SECRET }}" >> .env
             echo "KAKAO_API_KEY=${{ vars.KAKAO_API_KEY }}" >> .env
-            
-            echo "----Build app without daemon or cache"
-            ./gradlew build --no-daemon --no-build-cache
-            
+
             echo "----Restart Docker"
-            sudo docker-compose down --volumes --remove-orphans
-            sudo docker builder prune -af
-            sudo docker-compose up --build -d
+            ./gradlew build --no-daemon
+            
+            sudo docker-compose pull
+            sudo docker-compose build
+            sudo docker-compose up -d --force-recreate
             
             echo "----Container Logs"
             sudo docker logs kiroku-back_web_1 || true
             sudo docker logs kiroku-back_spring_1 || true
+
+      - name: Retry deploy after cache clean (only if failed)
+        if: steps.deploy-cache.outcome == 'failure'
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          passphrase: ${{ secrets.PROD_SSH_PASSPHRASE }}
+          script: |
+            echo "❌ 캐시 문제로 인해 재시도 중..."
+            
+            set -e
+            cd /app/kirocudev
+            sudo rm -rf kiroku-back
+            git clone https://github.com/bottleOne/kiroku-back.git
+            cd kiroku-back
+            
+            echo "GOOGLE_API_KEY=${{ vars.GOOGLE_API_KEY }}" > .env
+            echo "GOOGLE_SECRET=${{ vars.GOOGLE_SECRET }}" >> .env
+            echo "KAKAO_API_KEY=${{ vars.KAKAO_API_KEY }}" >> .env
+            
+            rm -rf ~/.gradle/caches ~/.gradle/daemon ~/.gradle/native .gradle
+            
+            ./gradlew build --no-daemon --no-build-cache
+            
+            sudo docker-compose down --volumes --remove-orphans
+            sudo docker system prune -af
+            sudo docker volume prune -f
+            sudo docker builder prune -af
+            sudo docker image prune -af
+            
+            sudo docker-compose build --no-cache
+            sudo docker-compose up -d --force-recreate
+            
+            sudo docker logs kiroku-back_web_1 || true
+            sudo docker logs kiroku-back_spring_1 || true
+
