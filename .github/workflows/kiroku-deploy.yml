@@ -52,6 +52,7 @@ jobs:
             echo "----Restart Docker"
             ./gradlew build --no-daemon
             
+            sudo docker system prune -af
             sudo docker-compose pull
             sudo docker-compose build
             sudo docker-compose up -d --force-recreate
