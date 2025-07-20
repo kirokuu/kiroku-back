@@ -3,6 +3,7 @@ package com.example.kiroku.user.dto;
 import com.example.kiroku.dto.ResponseResult;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.domain.type.UserType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ public class UserDto {
     @Getter @Setter
     @NoArgsConstructor
     public static class UserInfoNickName {
+        @Schema(required = true)
         private String nickname;
     }
 
@@ -20,15 +22,13 @@ public class UserDto {
     @NoArgsConstructor
     public static class UserInfoResponse extends ResponseResult {
         private String userId;
-        private String username;
         private String nickname;
         private String password;
         private String phoneNumber;
         private String userType;
 
-        public UserInfoResponse(String userId, String username, String nickname, String password, String phoneNumber, UserType userType){
+        public UserInfoResponse(String userId, String nickname, String password, String phoneNumber, UserType userType){
             this.userId = userId;
-            this.username = username;
             this.nickname = nickname;
             this.password = password;
             this.phoneNumber = phoneNumber;
@@ -37,7 +37,6 @@ public class UserDto {
 
         public static UserInfoResponse of(User user){
             return new UserInfoResponse(user.getUserId(),
-                    user.getUsername(),
                     user.getNickname(),
                     user.getPassword(),
                     user.getPhoneNumber(),
