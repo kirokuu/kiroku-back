@@ -43,7 +43,7 @@ public class JoinUserController {
         else return ResponseEntity.badRequest().body(status.isFail());
     }
 
-    @GetMapping("/checkid")
+    @PostMapping("/checkid")
     @Operation(summary = "회원 ID 사용 가능 여부 확인", description = "제공된 회원 ID가 이미 사용 중인지 확인합니다")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "회원 ID 사용 가능"),
@@ -55,7 +55,7 @@ public class JoinUserController {
         else return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/checkNickname")
+    @PostMapping("/checkNickname")
     @ResponseBody
     @Operation(summary = "닉네임 사용 가능 여부 확인", description = "제공된 닉네임이 이미 사용 중인지 확인합니다")
     @ApiResponses(value = {
