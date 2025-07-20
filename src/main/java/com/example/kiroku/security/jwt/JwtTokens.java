@@ -1,9 +1,6 @@
 package com.example.kiroku.security.jwt;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor()
 public class JwtTokens {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "token_id")
     private Long id;
     private String accessToken;
     private String refreshToken;
