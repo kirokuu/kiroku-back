@@ -73,7 +73,6 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        String token = jwtProvider.getJwtFromHeader(request);
         String refreshToken = jwtProvider.getRefreshToken(request);
 
         if (refreshToken != null) {

@@ -21,7 +21,7 @@ import java.util.Objects;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CustomOauth2UserService extends DefaultOAuth2UserService {
+public class CustomOauth2UserServiceImpl extends DefaultOAuth2UserService {
 
     private final UserService userService;
 

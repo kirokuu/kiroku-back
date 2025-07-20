@@ -12,6 +12,7 @@ public interface UserService {
     User findUserByNickname(String nickname);
     User getSocialUser(Oauth2UserInfo oauth2UserInfo);
     UserDto.UserInfoResponse getUserInfo(String userId);
+    void updateNickname(User user, String nickname);
     User saveUser(User user);
     void deleteUser(User user);
 }

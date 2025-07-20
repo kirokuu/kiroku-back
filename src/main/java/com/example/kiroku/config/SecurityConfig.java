@@ -3,7 +3,7 @@ package com.example.kiroku.config;
 
 
 import com.example.kiroku.login.service.OAuth2SuccessHandler;
-import com.example.kiroku.login.service.impl.CustomOauth2UserService;
+import com.example.kiroku.login.service.impl.CustomOauth2UserServiceImpl;
 import com.example.kiroku.security.filter.AuthTokenFilter;
 import com.example.kiroku.security.jwt.AuthEntryPointJwt;
 import com.example.kiroku.user.domain.User;
@@ -36,7 +36,7 @@ public class SecurityConfig {
 
     private final AuthEntryPointJwt unauthorizedHandler;
 
-    private final CustomOauth2UserService customOauth2UserService;
+    private final CustomOauth2UserServiceImpl customOauth2UserService;
     @Autowired
     private OAuth2SuccessHandler oAuth2SuccessHandler;
     @Bean

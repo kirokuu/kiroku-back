@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @OpenAPIDefinition(
-		info = @Info(title = "Kiroku API Docs",
+		info = @Info(title = "Kiroku API 문서",
 				version = "v1",
 				description = "Kiroku 서비스 API 명세서")
 )
