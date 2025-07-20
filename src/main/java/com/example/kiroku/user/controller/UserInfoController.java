@@ -10,8 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -20,11 +19,18 @@ public class UserInfoController {
 
     private final UserService userService;
 
-    @RequestMapping("/info")
+    @GetMapping("/info")
     public ResponseEntity<UserDto.UserInfoResponse> getUserInfo(HttpServletRequest request){
         User user = userService.findUser(request);
         if(user.isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         UserDto.UserInfoResponse userInfo = userService.getUserInfo(user.getUserId());
         return ResponseEntity.ok(userInfo);
+    }
+
+    @PostMapping("/update/nickname")
+    public ResponseEntity updateNickname(@RequestBody String nickname, HttpServletRequest request){
+        User user = userService.findUser(request);
+        userService.updateNickname(user, nickname);
+        return ResponseEntity.ok().build();
     }
 }

@@ -37,11 +37,8 @@ public record Oauth2UserInfo(String name,
     }
 
     public User toUser(){
-        return User.createUser(this.name,
+        return User.createSocialUser(this.name,
                 this.email,
-                this.name,
-                "",
-                "",
                 UserType.ROLE_USER
                 );
     }

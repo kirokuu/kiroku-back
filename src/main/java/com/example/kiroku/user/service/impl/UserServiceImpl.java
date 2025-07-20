@@ -76,6 +76,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateNickname(User user, String nickname) {
+        if(!user.isEmpty()) user.updateNickname(nickname);
+    }
+
+    @Override
     public void deleteUser(User user) {
         userRepository.delete(user);
     }
