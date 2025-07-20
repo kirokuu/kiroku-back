@@ -1,16 +1,24 @@
 package com.example.kiroku.user.dto;
 
+import com.example.kiroku.dto.ResponseResult;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.domain.type.UserType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
 public class UserDto {
 
+    @Getter @Setter
+    @NoArgsConstructor
+    public static class UserInfoNickName {
+        private String nickname;
+    }
 
     @Getter @Setter
-    public static class UserInfoResponse{
+    @NoArgsConstructor
+    public static class UserInfoResponse extends ResponseResult {
         private String userId;
         private String username;
         private String nickname;
@@ -36,5 +44,15 @@ public class UserDto {
                     user.getRole());
         }
 
+        public static UserInfoResponse empty(){
+            return new UserInfoResponse();
+        }
+
+        @Override
+        protected void setResult() {
+            this.setResult(this);
+            if(this.userId != null) basicSuccessSet();
+            else basicFailSet();
+        }
     }
 }
