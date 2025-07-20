@@ -18,7 +18,7 @@ public class User {
     @Column(name = "kirocu_id")
     private Long id;
     private String userId;
-    private String username;
+    @ColumnDefault(value = "'none'")
     private String nickname;
     private String password;
     @ColumnDefault(value = "01011112222")
@@ -28,32 +28,36 @@ public class User {
     @Transient
     private boolean isEmpty = false;
 
-    public User(String nickname, String userId,String username, String password, String phoneNumber, UserType role){
+    public User(String nickname, String userId, String password, String phoneNumber, UserType role){
         this.userId = userId;
-        this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.nickname = nickname;
         this.role = role;
     }
 
-    private User(String nickname, String userId, String username, String password, UserType role){
+    private User(String nickname, String userId, String password, UserType role){
         this.userId = userId;
-        this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.role = role;
     }
 
-    //User객체 최초생성(가입)
-    public static User createUser(String nickname, String userId, String username, String password, String phoneNumber, UserType role){
-        return new User(nickname,userId,username, password, phoneNumber, role);
+    private User(String userId, String password, UserType role){
+        this.userId = userId;
+        this.password = password;
+        this.role = role;
     }
-    public static User createUser(String nickname, String userId, String username, String password, UserType role){
-        return new User(nickname,userId,username, password, role);
+
+    //User객체 최초생성(가입)
+    public static User createUser( String userId, String password, String phoneNumber, UserType role){
+        return new User(userId, password, phoneNumber, role);
+    }
+    public static User createUser( String userId, String password, UserType role){
+        return new User(userId, password, role);
     }
     public static User createSocialUser(String nickname, String userId, UserType role){
-        return new User(nickname,userId,nickname, "","", role);
+        return new User(nickname,userId, "","", role);
     }
 
     public static User emptyUser(){

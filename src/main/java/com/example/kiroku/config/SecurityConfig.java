@@ -91,17 +91,15 @@ public class SecurityConfig {
     @Bean //TODO test용
     public CommandLineRunner initData(UserRepository repo, PasswordEncoder encoder) {
         return args -> {
-                User user1 = User.createUser("user1",
+                User user1 = User.createUser(
                         "user1@gmail.com",
-                        "유저1",
                         encoder.encode("12345678"),
                         "010-1234-0001",
                         UserType.ROLE_USER);
                 repo.save(user1);
 
-                User user2 = User.createUser("user2",
+                User user2 = User.createUser(
                         "user2@gmail.com",
-                        "유저2",
                         encoder.encode(
                                 "12345678"),
                         "010-1234-0001",

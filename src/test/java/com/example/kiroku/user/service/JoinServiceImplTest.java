@@ -34,14 +34,12 @@ class JoinServiceImplTest {
     void setUp() {
         // 테스트용 JoinRequest 객체 생성
         joinRequest = new JoinDto("testId",
-                "testName",
                 "password123",
                 "01012345678");
 
         // 테스트용 User 객체 생성
         user = new User("testName",
                 "testId",
-                "testName",
                 "password123",
                 "01012345678",
                 UserType.ROLE_USER);
