@@ -1,6 +1,5 @@
 package com.example.kiroku.user.dto;
 
-import com.example.kiroku.ResponseResult;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.domain.type.UserType;
 import jakarta.validation.constraints.NotNull;

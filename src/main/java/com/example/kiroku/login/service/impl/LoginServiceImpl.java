@@ -9,7 +9,6 @@ import com.example.kiroku.security.CustomUser;
 import com.example.kiroku.security.jwt.JwtTokens;
 import com.example.kiroku.security.jwt.JwtTokensRepository;
 import com.example.kiroku.security.util.JwtProvider;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,6 @@ public class LoginServiceImpl implements LoginService {
     public LoginDto.LoginResponse loginUser(String logindId, String password, HttpServletResponse response) {
         CustomUser customUser =(CustomUser) userDetailsService.loadUserByUsername(logindId);
         User user = passwordEncoder.matches(password, customUser.getPassword()) ? customUser.getUser() : User.emptyUser();
-        LoginDto.LoginResponse result = LoginDto.getResponse(user);
         if(!user.isEmpty()) {
             String jwtToken = jwtProvider.generateTokenFromUsername(CustomUser.create(user));
             String refreshToken = jwtProvider.generateRefreshTokenFromUsername(CustomUser.create(user));
@@ -55,9 +53,8 @@ public class LoginServiceImpl implements LoginService {
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             jwtProvider.saveRefreshToken(jwtToken, refreshToken, user.getUserId());
-            result.setTokens(jwtToken, refreshToken);
         }
-        return result;
+        return LoginDto.LoginResponse.getResponse(user);
     }
 
     @Override
