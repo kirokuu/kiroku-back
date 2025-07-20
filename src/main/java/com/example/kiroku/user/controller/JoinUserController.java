@@ -50,8 +50,8 @@ public class JoinUserController {
         @ApiResponse(responseCode = "200", description = "회원 ID 사용 가능", content = @Content()),
         @ApiResponse(responseCode = "409", description = "회원 ID가 이미 사용 중 (CONFLICT)" , content = @Content())
     })
-    public ResponseEntity checkDuplicateId(@RequestParam("userId") String userId) {
-        boolean result = joinService.checkDuplicateId(userId);
+    public ResponseEntity checkDuplicateId(@RequestBody JoinDto.CheckIdRequest userId) {
+        boolean result = joinService.checkDuplicateId(userId.getUserId());
         if(!result) return ResponseEntity.status(HttpStatus.CONFLICT).build();
         else return ResponseEntity.ok().build();
     }
@@ -63,8 +63,8 @@ public class JoinUserController {
         @ApiResponse(responseCode = "200", description = "닉네임 사용 가능" , content = @Content()),
         @ApiResponse(responseCode = "409", description = "닉네임이 이미 사용 중 (CONFLICT)" , content = @Content())
     })
-    public ResponseEntity checkDuplicateNickname(@RequestParam("nickname") String nickname) {
-        boolean result = joinService.checkDuplicateNickname(nickname);
+    public ResponseEntity checkDuplicateNickname(@RequestBody JoinDto.CheckNickname nickname) {
+        boolean result = joinService.checkDuplicateNickname(nickname.getNickname());
         if(!result) return ResponseEntity.status(HttpStatus.CONFLICT).build();
         else return ResponseEntity.ok().build();
     }
