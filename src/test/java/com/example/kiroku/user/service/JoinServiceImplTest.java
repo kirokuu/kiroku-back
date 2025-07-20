@@ -26,14 +26,14 @@ class JoinServiceImplTest {
     @InjectMocks
     private JoinServiceImpl joinService;
 
-    private JoinDto.JoinRequest joinRequest;
+    private JoinDto joinRequest;
     private User user;
     private User emptyUser;
 
     @BeforeEach
     void setUp() {
         // 테스트용 JoinRequest 객체 생성
-        joinRequest = new JoinDto.JoinRequest("testId",
+        joinRequest = new JoinDto("testId",
                 "testName",
                 "password123",
                 "01012345678");

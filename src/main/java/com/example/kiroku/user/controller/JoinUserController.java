@@ -7,10 +7,12 @@ import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.dto.JoinDto;
 import com.example.kiroku.user.service.JoinService;
 import com.example.kiroku.user.service.UserService;
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,18 +27,16 @@ public class JoinUserController {
     private final LoginService loginService;
 
     @PostMapping("/in")
-    @ResponseBody
-    public ResponseEntity<JoinStatus> JoinUserController(JoinDto.JoinRequest joinRequest) {
-        JoinStatus status = joinService.joinUser(joinRequest);
+    public ResponseEntity<JoinStatus> join(@Valid @RequestBody JoinDto joinDto) {
+        JoinStatus status = joinService.joinUser(joinDto);
         if (status.isSuccess()) return ResponseEntity.ok(status);
         else return ResponseEntity.badRequest().body(status.isFail());
     }
 
-    @GetMapping("/checkId")
-    @ResponseBody
+    @GetMapping("/checkid")
     public ResponseEntity<Boolean> checkDuplicateId(@RequestParam("userId") String userId) {
         boolean result = joinService.checkDuplicateId(userId);
-        if(result) return ResponseEntity.status(HttpStatus.IM_USED).build();
+        if(!result) return ResponseEntity.status(HttpStatus.IM_USED).build();
         else return ResponseEntity.ok().build();
     }
 
@@ -44,7 +44,7 @@ public class JoinUserController {
     @ResponseBody
     public ResponseEntity checkDuplicateNickname(@RequestParam("nickname") String nickname) {
         boolean result = joinService.checkDuplicateNickname(nickname);
-        if(result) return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        if(!result) return ResponseEntity.status(HttpStatus.CONFLICT).build();
         else return ResponseEntity.ok().build();
     }
 

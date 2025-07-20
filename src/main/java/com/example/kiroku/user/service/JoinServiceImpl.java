@@ -15,7 +15,7 @@ public class JoinServiceImpl implements JoinService{
     private final UserService userService;
 
     @Override
-    public JoinStatus joinUser(JoinDto.JoinRequest joinRequest) {
+    public JoinStatus joinUser(JoinDto joinRequest) {
         User user = joinRequest.ofUser();
         boolean duplicateId = !checkDuplicateId(user.getUserId());
         boolean duplicateNickname = !checkDuplicateNickname(user.getNickname());
