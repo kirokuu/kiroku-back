@@ -1,5 +1,6 @@
 package com.example.kiroku.user.dto;
 
+import com.example.kiroku.dto.ResponseResult;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.domain.type.UserType;
 import jakarta.validation.constraints.NotNull;
@@ -25,5 +26,21 @@ public class JoinDto {
                 UserType.ROLE_USER);
 
         return User.createUser(this.username, this.userId, this.username, this.password, this.phoneNumber, UserType.ROLE_USER);
+    }
+
+    @Getter @Setter
+    public static class CheckIdRequest {
+        private String userId;
+        public CheckIdRequest(String userId){
+            this.userId = userId;
+        }
+    }
+
+    @Getter @Setter
+    public static class CheckNickname {
+        private String nickname;
+        public CheckNickname(String nickname){
+            this.nickname = nickname;
+        }
     }
 }
