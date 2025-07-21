@@ -1,6 +1,5 @@
 package com.example.kiroku.user.service;
 
-import com.example.kiroku.user.JoinStatus;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.dto.JoinDto;
 import jakarta.transaction.Transactional;
