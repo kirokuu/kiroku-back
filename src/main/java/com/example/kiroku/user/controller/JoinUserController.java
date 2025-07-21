@@ -1,10 +1,10 @@
 package com.example.kiroku.user.controller;
 
+import com.example.kiroku.dto.ResponseResult;
 import com.example.kiroku.login.service.LoginService;
-import com.example.kiroku.security.util.JwtProvider;
-import com.example.kiroku.user.JoinStatus;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.dto.JoinDto;
+import com.example.kiroku.user.dto.JoinResponse;
 import com.example.kiroku.user.service.JoinService;
 import com.example.kiroku.user.service.UserService;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,10 +38,11 @@ public class JoinUserController {
         @ApiResponse(responseCode = "200", description = "회원가입 성공", content = @Content()),
         @ApiResponse(responseCode = "400", description = "잘못된 입력 또는 회원가입 실패", content = @Content())
     })
-    public ResponseEntity<JoinStatus> join(@Valid @RequestBody JoinDto joinDto) {
+    public ResponseEntity<ResponseResult> join(@Valid @RequestBody JoinDto joinDto) {
         JoinStatus status = joinService.joinUser(joinDto);
-        if (status.isSuccess()) return ResponseEntity.ok(status);
-        else return ResponseEntity.badRequest().body(status.isFail());
+        JoinResponse response = JoinResponse.of(status);
+        if (status.isSuccess()) return ResponseEntity.ok(response.getResult());
+        else return ResponseEntity.status(status.getCode()).body(response.getResult());
     }
 
     @PostMapping("/check-id")
