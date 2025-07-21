@@ -1,5 +1,6 @@
 package com.example.kiroku.user.service;
 
+import com.example.kiroku.user.JoinStatus;
 import com.example.kiroku.user.dto.JoinDto;
 
 public interface JoinService {

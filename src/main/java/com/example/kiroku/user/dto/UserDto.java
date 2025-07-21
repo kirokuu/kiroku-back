@@ -46,12 +46,5 @@ public class UserDto {
         public static UserInfoResponse empty(){
             return new UserInfoResponse();
         }
-
-        @Override
-        protected void setResult() {
-            this.setResult(this);
-            if(this.userId != null) basicSuccessSet();
-            else basicFailSet();
-        }
     }
 }

@@ -2,9 +2,9 @@ package com.example.kiroku.user.controller;
 
 import com.example.kiroku.dto.ResponseResult;
 import com.example.kiroku.login.service.LoginService;
+import com.example.kiroku.user.JoinStatus;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.dto.JoinDto;
-import com.example.kiroku.user.dto.JoinResponse;
 import com.example.kiroku.user.service.JoinService;
 import com.example.kiroku.user.service.UserService;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,9 +40,8 @@ public class JoinUserController {
     })
     public ResponseEntity<ResponseResult> join(@Valid @RequestBody JoinDto joinDto) {
         JoinStatus status = joinService.joinUser(joinDto);
-        JoinResponse response = JoinResponse.of(status);
-        if (status.isSuccess()) return ResponseEntity.ok(response.getResult());
-        else return ResponseEntity.status(status.getCode()).body(response.getResult());
+        if (status.isSuccess()) return ResponseEntity.ok(ResponseResult.success());
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseResult.error(400, status.getMessage()));
     }
 
     @PostMapping("/check-id")
