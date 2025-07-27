@@ -1,5 +1,6 @@
 package com.example.kiroku.login.service.impl;
 
+import com.example.kiroku.exceoption.UserNotFoundException;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.login.dto.KakaoDto;
 import com.example.kiroku.login.dto.LoginDto;
@@ -34,7 +35,7 @@ public class LoginServiceImpl implements LoginService {
     private final JwtTokensRepository jwtTokensRepository;
 
     @Override
-    public LoginDto.LoginResponse loginUser(String logindId, String password, HttpServletResponse response) {
+    public void loginUser(String logindId, String password, HttpServletResponse response) {
         CustomUser customUser =(CustomUser) userDetailsService.loadUserByUsername(logindId);
         User user = passwordEncoder.matches(password, customUser.getPassword()) ? customUser.getUser() : User.emptyUser();
         if(!user.isEmpty()) {
@@ -53,8 +54,9 @@ public class LoginServiceImpl implements LoginService {
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             jwtProvider.saveRefreshToken(jwtToken, refreshToken, user.getUserId());
+        }else {
+            throw new UserNotFoundException();
         }
-        return LoginDto.LoginResponse.getResponse(user);
     }
 
     @Override

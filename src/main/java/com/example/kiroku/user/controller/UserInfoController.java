@@ -1,9 +1,11 @@
 package com.example.kiroku.user.controller;
 
 import com.example.kiroku.dto.ResponseResult;
+import com.example.kiroku.exceoption.UserNotFoundException;
 import com.example.kiroku.user.domain.User;
 import com.example.kiroku.user.dto.UserDto;
 import com.example.kiroku.user.service.UserService;
+import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,13 +31,11 @@ public class UserInfoController {
             @ApiResponse(responseCode = "200", description = "회원정보 조회 성공"),
             @ApiResponse(responseCode = "401", description = "찾을 수 없는 회원")
     })
-    public ResponseEntity<ResponseResult> getUserInfo(HttpServletRequest request){
+    public ResponseEntity<ResponseResult<UserDto.UserInfoResponse>> getUserInfo(HttpServletRequest request){
         User user = userService.findUser(request);
-        if(user.isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
-                body(UserDto.UserInfoResponse.empty().
-                        getCustomResult("찾을수 없는 회원입니다",HttpStatus.UNAUTHORIZED.value()));
+        if(user.isEmpty()) throw new UserNotFoundException();
         UserDto.UserInfoResponse userInfo = userService.getUserInfo(user.getUserId());
-        return ResponseEntity.ok(userInfo.getResult());
+        return ResponseEntity.ok(ResponseResult.success(userInfo));
     }
 
     @PostMapping("/update/nickname")
@@ -47,6 +47,6 @@ public class UserInfoController {
     public ResponseEntity updateNickname(@RequestBody UserDto.UserInfoNickName userNickname, HttpServletRequest request){
         User user = userService.findUser(request);
         userService.updateNickname(user, userNickname.getNickname());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ResponseResult.success());
     }
 }

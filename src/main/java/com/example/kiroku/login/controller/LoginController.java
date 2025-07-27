@@ -32,10 +32,8 @@ public class LoginController {
         @ApiResponse(responseCode = "400", description = "인증오류 또는 로그인 실패")
     })
     public ResponseEntity<ResponseResult> login(@RequestBody @Valid LoginDto.LoginRequest loginRequest, HttpServletResponse response) {
-        LoginDto.LoginResponse loginResponse = loginService.loginUser(loginRequest.getUsername(), loginRequest.getPassword().toString(), response);
-        ResponseResult result = loginResponse.getResult();
-        if(result.getCode() == LoginStatus.FAIL.getCode()) return ResponseEntity.badRequest().body(result);
-        else return ResponseEntity.ok(result);
+        loginService.loginUser(loginRequest.getUsername(), loginRequest.getPassword().toString(), response);
+        return ResponseEntity.ok(ResponseResult.success());
     }
 
     @GetMapping("/kakao")
@@ -63,8 +61,8 @@ public class LoginController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그아웃 성공")
     })
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<ResponseResult> logout(HttpServletRequest request, HttpServletResponse response) {
         loginService.logout(request, response);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ResponseResult.success());
     }
 }

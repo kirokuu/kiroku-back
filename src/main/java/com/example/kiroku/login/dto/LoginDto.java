@@ -25,33 +25,5 @@ public class LoginDto {
         private String password;
     }
 
-    @AllArgsConstructor
-    @Getter @Setter
-    public static class LoginResponse extends ResponseResult {
 
-        @Override
-        protected void setResult() {
-            this.setResult(this);
-        }
-
-        public void success(){
-            customSuccessSet( LoginStatus.SUCCESS.getCode(),
-                    LoginStatus.SUCCESS.getMessage()
-                   );
-        }
-
-        public void fail(){
-            customFailSet(LoginStatus.SUCCESS.getCode(),
-                    LoginStatus.SUCCESS.getMessage()
-                    );
-        }
-
-
-        public static LoginResponse getResponse(User user){
-            LoginResponse loginResponse = new LoginResponse();
-            if(user.isEmpty())  loginResponse.fail();
-            else  loginResponse.success();
-            return loginResponse;
-        }
-    }
 }
