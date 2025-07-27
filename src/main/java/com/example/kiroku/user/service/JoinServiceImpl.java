@@ -19,7 +19,7 @@ public class JoinServiceImpl implements JoinService{
         User user = joinRequest.ofUser();
         boolean duplicateId = !checkDuplicateId(user.getUserId());
         boolean duplicateNickname = !checkDuplicateNickname(user.getNickname());
-        User userToJoin = userService.findUserToJoin(user.getUserId(), user.getPhoneNumber());
+        User userToJoin = userService.findUser(user.getUserId());
 
         if(duplicateId) return JoinStatus.DUPLICATE_ID;
         else if(duplicateNickname) return JoinStatus.DUPLICATE_NICKNAME;
