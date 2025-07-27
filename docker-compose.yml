@@ -1,6 +1,7 @@
 services:
   web:
     image: nginx
+    container_name: kiroku-nginx
     user: root
     ports:
       - 80:80
@@ -14,6 +15,7 @@ services:
   spring:
     build: .
     image: kiroku-backend:latest
+    container_name: kiroku-spring
     ports:
       - 8090:8090
     environment:

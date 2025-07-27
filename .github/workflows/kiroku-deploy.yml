@@ -53,15 +53,17 @@ jobs:
             ./gradlew build --no-daemon
             
             sudo docker-compose down --volumes --remove-orphans
-            sudo docker system prune -af
-            
+            # sudo docker system prune -af 이미지까지 모두 날리기 때문에X
+            sudo docker builder prune -af  # 빌드 캐시만 제거
+            sudo docker image prune -af    # dangling image 제거
+  
             sudo docker-compose pull
             sudo docker-compose build
             sudo docker-compose up -d --force-recreate
             
             echo "----Container Logs"
-            sudo docker logs kiroku-back_web_1 || true
-            sudo docker logs kiroku-back_spring_1 || true
+            sudo docker logs kiroku-nginx || true
+            sudo docker logs kiroku-spring || true
 
       - name: Retry deploy after cache clean (only if failed)
         id: deploy-cache
@@ -75,7 +77,9 @@ jobs:
           script: |
             echo "❌ 캐시 문제로 인해 재시도 중..."
             
-            sudo docker system prune -af
+            # sudo docker system prune -af 이미지까지 모두 날리기 때문에X
+            sudo docker builder prune -af  # 빌드 캐시만 제거
+            sudo docker image prune -af    # dangling image 제거
             
             set -e
             cd /app/kirocudev
@@ -96,7 +100,7 @@ jobs:
             sudo docker builder prune -af
             sudo docker image prune -af
             
-            sudo docker-compose build --no-cache
+            sudo docker-compose build
             sudo docker-compose up -d --force-recreate
             
             sudo docker logs kiroku-back_web_1 || true
