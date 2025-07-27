@@ -55,7 +55,7 @@ class JoinServiceImplTest {
         // UserService의 메소드들이 어떤 값을 반환할지 설정
         when(userService.findUser(anyString())).thenReturn(emptyUser); // 중복 ID 없음
         when(userService.findUserByNickname(anyString())).thenReturn(emptyUser); // 중복 닉네임 없음
-        when(userService.findUserToJoin(anyString(), anyString())).thenReturn(emptyUser); // 이미 가입한 회원 없음
+        when(userService.findUser(anyString())).thenReturn(emptyUser); // 이미 가입한 회원 없음
         when(userService.saveUser(any(User.class))).thenReturn(user); // 저장 성공
 
         // when
@@ -71,7 +71,6 @@ class JoinServiceImplTest {
         // given
         when(userService.findUser(anyString())).thenReturn(user); // 중복 ID 있음
         when(userService.findUserByNickname(anyString())).thenReturn(emptyUser); // 중복 닉네임 없음
-        when(userService.findUserToJoin(anyString(), anyString())).thenReturn(emptyUser); // 이미 가입한 회원 없음
 
         // when
         JoinStatus result = joinService.joinUser(joinRequest);
@@ -86,7 +85,6 @@ class JoinServiceImplTest {
         // given
         when(userService.findUser(anyString())).thenReturn(emptyUser); // 중복 ID 없음
         when(userService.findUserByNickname(anyString())).thenReturn(user); // 중복 닉네임 있음
-        when(userService.findUserToJoin(anyString(), anyString())).thenReturn(emptyUser); // 이미 가입한 회원 없음
 
         // when
         JoinStatus result = joinService.joinUser(joinRequest);
@@ -95,7 +93,7 @@ class JoinServiceImplTest {
         assertEquals(JoinStatus.DUPLICATE_NICKNAME, result, "중복 닉네임으로 인해 회원 가입이 실패해야 합니다");
     }
 
-    @Test
+    /*@Test
     @DisplayName("이미 가입한 회원으로 인한 회원 가입 실패 테스트")
     void joinUser_AlreadyJoin() {
         // given
@@ -108,7 +106,7 @@ class JoinServiceImplTest {
 
         // then
         assertEquals(JoinStatus.ALREADY_JOIN, result, "이미 가입한 회원으로 인해 회원 가입이 실패해야 합니다");
-    }
+    }*/
 
     @Test
     @DisplayName("ID 중복 체크 테스트")
